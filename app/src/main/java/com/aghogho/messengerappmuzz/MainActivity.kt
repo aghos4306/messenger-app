@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -12,16 +13,27 @@ import androidx.viewpager.widget.ViewPager
 import com.aghogho.messengerappmuzz.databinding.ActivityMainBinding
 import com.aghogho.messengerappmuzz.fragments.ChatsFragment
 import com.aghogho.messengerappmuzz.fragments.SearchFragment
+import com.aghogho.messengerappmuzz.modelclass.Users
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.*
+import com.google.firebase.ktx.Firebase
+import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    var refUsers: DatabaseReference? = null
+    var firebaseUserId: FirebaseUser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        firebaseUserId = FirebaseAuth.getInstance().currentUser
+        refUsers = FirebaseDatabase.getInstance().reference.child("Users").child(firebaseUserId!!.uid)
 
         if (::binding.isInitialized) {
             setSupportActionBar(binding.toolbarMain)
@@ -38,6 +50,26 @@ class MainActivity : AppCompatActivity() {
 
         viewPager.adapter = viewPagerAdapter
         tabLayout.setupWithViewPager(viewPager)
+
+        //Render Username and user profile pix
+        refUsers!!.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val user: Users? = snapshot.getValue(Users::class.java)
+                    val userName: TextView = findViewById(R.id.user_name)
+                    val profilePix: CircleImageView = findViewById(R.id.profile_image)
+                    Picasso.get().load(user!!.getProfile())
+                        //displays the default profile until the network fetches the profile from fb
+                        .placeholder(R.drawable.default_profile)
+                        .into(profilePix)
+                    userName.text = user!!.getUserName()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
 
     }
 
