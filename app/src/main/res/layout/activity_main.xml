@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimaryDark"
-            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Dark">
+            app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_image"
@@ -57,5 +57,7 @@
         android:layout_height="match_parent">
 
     </androidx.viewpager.widget.ViewPager>
+
+    <include layout="@layout/content_main" />
 
 </LinearLayout>

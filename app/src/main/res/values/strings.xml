@@ -9,4 +9,5 @@
     <string name="username_register">Username</string>
     <string name="register_btn">Register</string>
     <string name="login_btn">Login</string>
+    <string name="logout">Logout</string>
 </resources>
