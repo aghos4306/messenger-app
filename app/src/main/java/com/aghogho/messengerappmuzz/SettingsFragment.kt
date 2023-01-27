@@ -2,6 +2,7 @@ package com.aghogho.messengerappmuzz
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import com.aghogho.messengerappmuzz.modelclass.Users
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
@@ -34,6 +36,7 @@ class SettingsFragment : Fragment() {
     private var imageUri: Uri? = null
     private var uploadedStorageReference: StorageReference? = null
     private var checkIfCoverImage: String? = ""
+    private var checkSocialMediaLink: String? = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_settings, container, false)
@@ -71,6 +74,21 @@ class SettingsFragment : Fragment() {
         view.findViewById<ImageView>(R.id.cover_image_settings).setOnClickListener {
             checkIfCoverImage = "cover"
             pickProfileImage()
+        }
+
+        view.findViewById<ImageView>(R.id.set_facebook).setOnClickListener {
+            checkSocialMediaLink = "facebook"
+            getSocialMediaLinks()
+        }
+
+        view.findViewById<ImageView>(R.id.set_instagram).setOnClickListener {
+            checkSocialMediaLink = "instagram"
+            getSocialMediaLinks()
+        }
+
+        view.findViewById<ImageView>(R.id.set_website).setOnClickListener {
+            checkSocialMediaLink = "website"
+            getSocialMediaLinks()
         }
 
         return view
@@ -132,8 +150,59 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    private fun pickCoverImage() {
+    private fun getSocialMediaLinks() {
+        val builder: AlertDialog.Builder =
+            AlertDialog.Builder(requireContext(), androidx.appcompat.R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+        if (checkSocialMediaLink == "website") {
+            builder.setTitle("Write URL:")
+        } else {
+            builder.setTitle("Write Username:")
+        }
 
+        val editText = EditText(context)
+        if (checkSocialMediaLink == "website") {
+            editText.hint = "e.g www.muzzmatch.com"
+        } else {
+            editText.hint = "e.g kubisense"
+        }
+        builder.setView(editText)
+
+        builder.setPositiveButton("create", DialogInterface.OnClickListener {
+                dialog, which ->
+            val str = editText.text.toString()
+            if (str == "") {
+                Toast.makeText(context, "Please input specified url or username", Toast.LENGTH_LONG).show()
+            } else {
+                saveSocialMediaLink(str)
+            }
+        })
+
+        builder.setNegativeButton("cancel", DialogInterface.OnClickListener {
+                dialog, which ->
+            dialog.cancel()
+        })
+        builder.show()
+    }
+
+    private fun saveSocialMediaLink(str: String) {
+        val mapSocialMediaLink = HashMap<String, Any>()
+        when(checkSocialMediaLink) {
+            "facebook" -> {
+                mapSocialMediaLink["facebook"] = "https://m.facebook.com/$str"
+            }
+            "instagram" -> {
+                mapSocialMediaLink["instagram"] = "https://m.instagram.com/$str"
+            }
+            "website" -> {
+                mapSocialMediaLink["website"] = "https://$str"
+            }
+        }
+
+        usersReference!!.updateChildren(mapSocialMediaLink).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(context, "Social link upadated successfully...", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
 }
