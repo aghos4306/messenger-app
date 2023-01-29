@@ -121,7 +121,7 @@ class SettingsFragment : Fragment() {
 
             val uploadTask: StorageTask<*>
             uploadTask = uploadFileReff.putFile(imageUri!!)
-            uploadTask.continueWithTask<Uri?>(Continuation <UploadTask.TaskSnapshot, Task<Uri>> { task ->
+            uploadTask.continueWithTask(Continuation <UploadTask.TaskSnapshot, Task<Uri>>{ task ->
                 if (!task.isSuccessful) {
                     task.exception?.let {
                         throw it
@@ -135,12 +135,12 @@ class SettingsFragment : Fragment() {
 
                     if (checkIfCoverImage == "cover") {
                         val mapCoverImg = HashMap<String, Any>()
-                        mapCoverImg["cover"]
+                        mapCoverImg["cover"] = url
                         usersReference!!.updateChildren(mapCoverImg)
                         checkIfCoverImage = ""
                     } else {
                         val mapProfileImg = HashMap<String, Any>()
-                        mapProfileImg["profile"]
+                        mapProfileImg["profile"] = url
                         usersReference!!.updateChildren(mapProfileImg)
                         checkIfCoverImage = ""
                     }
