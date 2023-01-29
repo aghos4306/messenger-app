@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.aghogho.messengerappmuzz.adapterclass.ChatsAdapter
@@ -41,8 +42,6 @@ class MessageChatActivity : AppCompatActivity() {
     private var chatsAdapter: ChatsAdapter? = null
     private var mChatList: List<Chat>? = null
 
-    lateinit var recyclerViewChats: RecyclerView
-
     lateinit var recycler_view_chats: RecyclerView
 
 
@@ -51,15 +50,21 @@ class MessageChatActivity : AppCompatActivity() {
         binding = ActivityMessageChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //back btn setup
+        val toolbar: Toolbar = findViewById(com.aghogho.messengerappmuzz.R.id.toolbar_message_chat)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.title = ""
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener {
+            val intent = Intent(this@MessageChatActivity, WelcomeActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+            finish()
+        }
+
         intent = intent
         userIdVisit = intent.getStringExtra("visit_id").toString()
         firebaseUser = FirebaseAuth.getInstance().currentUser
-
-//        val recyclerViewChats = binding.recyclerViewChats
-//        recyclerViewChats.setHasFixedSize(true)
-//        var linearLayoutManager = LinearLayoutManager(applicationContext)
-//        linearLayoutManager.stackFromEnd = true
-//        recyclerViewChats.layoutManager = linearLayoutManager
 
         recycler_view_chats = findViewById(com.aghogho.messengerappmuzz.R.id.recycler_view_chats)
         recycler_view_chats.setHasFixedSize(true)
@@ -209,7 +214,7 @@ class MessageChatActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+
             }
 
         })
