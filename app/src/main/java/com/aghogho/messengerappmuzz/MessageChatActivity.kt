@@ -10,7 +10,11 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.aghogho.messengerappmuzz.adapterclass.ChatsAdapter
 import com.aghogho.messengerappmuzz.databinding.ActivityMessageChatBinding
+import com.aghogho.messengerappmuzz.modelclass.Chat
 import com.aghogho.messengerappmuzz.modelclass.Users
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
@@ -19,6 +23,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.R
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageTask
@@ -33,6 +38,14 @@ class MessageChatActivity : AppCompatActivity() {
     private var userIdVisit: String = ""
     private var firebaseUser: FirebaseUser? = null
 
+    private var chatsAdapter: ChatsAdapter? = null
+    private var mChatList: List<Chat>? = null
+
+    lateinit var recyclerViewChats: RecyclerView
+
+    lateinit var recycler_view_chats: RecyclerView
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMessageChatBinding.inflate(layoutInflater)
@@ -42,6 +55,18 @@ class MessageChatActivity : AppCompatActivity() {
         userIdVisit = intent.getStringExtra("visit_id").toString()
         firebaseUser = FirebaseAuth.getInstance().currentUser
 
+//        val recyclerViewChats = binding.recyclerViewChats
+//        recyclerViewChats.setHasFixedSize(true)
+//        var linearLayoutManager = LinearLayoutManager(applicationContext)
+//        linearLayoutManager.stackFromEnd = true
+//        recyclerViewChats.layoutManager = linearLayoutManager
+
+        recycler_view_chats = findViewById(com.aghogho.messengerappmuzz.R.id.recycler_view_chats)
+        recycler_view_chats.setHasFixedSize(true)
+        var linearLayoutManager = LinearLayoutManager(applicationContext)
+        linearLayoutManager.stackFromEnd = true
+        recycler_view_chats.layoutManager = linearLayoutManager
+
         val reference = FirebaseDatabase.getInstance().reference.child("Users").child(userIdVisit)
         reference.addValueEventListener(object : ValueEventListener {
 
@@ -50,6 +75,8 @@ class MessageChatActivity : AppCompatActivity() {
 
                 binding.usernameMchat.text = user!!.getUserName()
                 Picasso.get().load(user.getProfile()).into(binding.profileImageMchat)
+
+                retrieveMessages(firebaseUser!!.uid, userIdVisit, user.getProfile())
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -161,5 +188,30 @@ class MessageChatActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun retrieveMessages(senderId: String, receiverId: String, receiverImgUrl: String?) {
+        mChatList = ArrayList()
+        val reference = FirebaseDatabase.getInstance().reference.child("Chats")
+        reference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshots: DataSnapshot) {
+                (mChatList as ArrayList<Chat>).clear()
+                for (snapshot in snapshots.children) {
+                    val chat = snapshot.getValue(Chat::class.java)
+                    if (chat!!.getReceiver().equals(senderId) && chat.getSender().equals(receiverId)
+                        || chat.getReceiver().equals(receiverId) && chat.getSender().equals(senderId) ) {
+                        (mChatList as ArrayList<Chat>).add(chat)
+                    }
+                    chatsAdapter = ChatsAdapter(this@MessageChatActivity, (mChatList as ArrayList<Chat>), receiverImgUrl!!)
+                    //recyclerViewChats.adapter = chatsAdapter
+                    recycler_view_chats.adapter = chatsAdapter
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
 }
