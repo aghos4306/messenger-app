@@ -78,8 +78,11 @@ class ChatsFragment : Fragment() {
                         }
                     }
                 }
-                userAdapter = UserAdapter(context!!, (mUsers as ArrayList<Users>), true)
-                recycler_view_chatlist.adapter = userAdapter
+                if (context != null) {
+
+                    userAdapter = UserAdapter(context!!, (mUsers as ArrayList<Users>), true)
+                    recycler_view_chatlist.adapter = userAdapter
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
