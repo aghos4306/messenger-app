@@ -6,6 +6,7 @@
         <entry key="app/src/main/res/drawable/background_right.xml" value="0.117" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_message_chat.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.284375" />
         <entry key="app/src/main/res/layout/activity_welcome.xml" value="0.284375" />
         <entry key="app/src/main/res/layout/content_main.xml" value="0.22146739130434784" />

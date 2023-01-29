@@ -1,11 +1,16 @@
 package com.aghogho.messengerappmuzz.adapterclass
 
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.aghogho.messengerappmuzz.MessageChatActivity
 import com.aghogho.messengerappmuzz.R
 import com.aghogho.messengerappmuzz.modelclass.Users
 import com.squareup.picasso.Picasso
@@ -51,9 +56,27 @@ class UserAdapter(
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
         val user = mUsers[position]
         holder.userNameTxt.text = user.getUserName()
-        Picasso.get().load(user.getProfile())
-            .placeholder(R.drawable.default_profile)
-            .into(holder.profileImageView)
+        Picasso.get().load(user.getProfile()).placeholder(R.drawable.default_profile).into(holder.profileImageView)
+
+        //specify to user what to do
+        holder.itemView.setOnClickListener {
+            val options = arrayOf<CharSequence>(
+                "Send Message",
+                "Visit Profile"
+            )
+            val builder: AlertDialog.Builder = AlertDialog.Builder(mContext)
+            builder.setTitle("What do you want?")
+            builder.setItems(options, DialogInterface.OnClickListener { dialog, position ->
+                if (position == 0) {
+                    val intent = Intent(mContext, MessageChatActivity::class.java)
+                    intent.putExtra("visit_id", user.getUID())
+                    mContext.startActivity(intent)
+                } else if (position == 1) {
+
+                }
+            })
+            builder.show()
+        }
     }
 
     override fun getItemCount(): Int {

@@ -32,7 +32,7 @@ class SettingsFragment : Fragment() {
     private var userNameSettingsET: TextView? = null
     private var profileImgContainer: CircleImageView? = null
     private var coverImgContainer: ImageView? = null
-    private var REQUEST_CODE = 450
+    private var REQUEST_CODE = 438
     private var imageUri: Uri? = null
     private var uploadedStorageReference: StorageReference? = null
     private var checkIfCoverImage: String? = ""
