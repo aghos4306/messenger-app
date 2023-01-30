@@ -66,7 +66,7 @@ class MessageChatActivity : AppCompatActivity() {
 
         recycler_view_chats = findViewById(com.aghogho.messengerappmuzz.R.id.recycler_view_chats)
         recycler_view_chats.setHasFixedSize(true)
-        var linearLayoutManager = LinearLayoutManager(applicationContext)
+        val linearLayoutManager = LinearLayoutManager(applicationContext)
         linearLayoutManager.stackFromEnd = true
         recycler_view_chats.layoutManager = linearLayoutManager
 

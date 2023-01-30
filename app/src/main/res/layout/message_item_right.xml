@@ -9,8 +9,7 @@
     <RelativeLayout
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true">
+        android:layout_alignParentEnd="true">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image_chat"

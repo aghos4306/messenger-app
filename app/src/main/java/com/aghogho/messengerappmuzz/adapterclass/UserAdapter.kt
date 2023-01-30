@@ -72,7 +72,7 @@ class UserAdapter(
                     intent.putExtra("visit_id", user.getUID())
                     mContext.startActivity(intent)
                 } else if (position == 1) {
-
+                    //Implement Visit Profile
                 }
             })
             builder.show()

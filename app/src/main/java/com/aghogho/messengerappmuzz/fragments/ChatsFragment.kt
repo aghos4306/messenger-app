@@ -79,7 +79,6 @@ class ChatsFragment : Fragment() {
                     }
                 }
                 if (context != null) {
-
                     userAdapter = UserAdapter(context!!, (mUsers as ArrayList<Users>), true)
                     recycler_view_chatlist.adapter = userAdapter
                 }
